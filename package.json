@@ -1,0 +1,25 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProNaVy/bot-for-SM.git"
+  },
+  "author": "ProNaVy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ProNaVy/bot-for-SM/issues"
+  },
+  "homepage": "https://github.com/ProNaVy/bot-for-SM#readme",
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "mysql": "^2.18.1",
+    "node-telegram-bot-api": "^0.64.0"
+  }
+}
