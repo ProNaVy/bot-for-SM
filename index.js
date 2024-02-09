@@ -1,5 +1,5 @@
 require('dotenv').config()
-import {contact_UK, contact_T, contact_RES, contact_water, contact_boss} from app.js
+const seachResult = require('./app.js')
 const TelegramBot = require('node-telegram-bot-api');
 
 console.log("Bot has been started...")
@@ -40,7 +40,7 @@ const options = {
     }
 };
 
-
+let seach
 let infForEachNumber
 let infForEachAdress
 
@@ -55,7 +55,7 @@ bot.on('callback_query', (query) => {
 
   if (query.data === 'find_number') { // если поиск по номеру объекта
       console.log(query);
-      bot.sendMessage(chatId, "Введите номер объекта в формате 8617/ХХХ")
+      bot.sendMessage(chatId, "Введите номер объекта в формате 8617_ХХХ")
       
       bot.on("text", (msg) => {
         infForEachNumber = msg.text
@@ -83,24 +83,56 @@ bot.on('callback_query', (query) => {
     bot.on('callback_query', (query) => {
         const chatId = query.message.chat.id;
       
-        if (query.data === 'Аварийная служба ТСЖ') { // если поиск по номеру объекта
-        bot.sendMessage(chatId, contact_UK)
+        if (query.data === 'Аварийная служба ТСЖ') {
+          seach = "Аварийная_служба_ТСЖ"
+          console.log(seach)
+                    
          }
-        else if (query.data === 'Тепловые сети') { // если поиск по номеру объекта
-        bot.sendMessage(chatId, contact_T)
+        else if (query.data === 'Тепловые сети') {
+          seach = "Тепловые_сети"
+          console.log(seach)
+          
          }
-        else if (query.data === 'РЭС') { // если поиск по номеру объекта
-        bot.sendMessage(chatId, contact_RES)
+        else if (query.data === 'РЭС') { 
+          seach = "РЭС"
+          console.log(seach)
+          
          }
-        else if (query.data === 'Водоканал') { // если поиск по номеру объекта
-        bot.sendMessage(chatId, contact_water)
+        else if (query.data === 'Водоканал') { 
+          seach = "Водоканал"
+          console.log(seach)
+        } 
+        else if (query.data === 'Руководители ВСП') { 
+          seach = "Руководители_ВСП"
+          console.log(seach)
+          
          }
-        else if (query.data === 'Руководители ВСП') { // если поиск по номеру объекта
-        bot.sendMessage(chatId, contact_boss)
-         }
-        })
+         // вариант с добавлением модуля из арр
+         let data
+         let sql
 
-export {infForEachNumber, infForEachAdress}
+      if(infForEachNumber === undefined){
+      data = [seach, infForEachAdress];
+      sql = `select ${seach} from contact inner join filial_inf on filial_inf.idINF_filial = filial_id where filial_inf.adress like '%${infForEachAdress}%'`
+      } else {
+      data = [seach, infForEachNumber];
+      sql = `select ${seach} from contact where number_fil = '${infForEachNumber}'`
+      }
+
+      
+     const result = JSON.stringify(seachResult(sql, data))
+       
+     console.log(result)
+     bot.on("text", (msg) => {
+         bot.sendMessage(msg.chat.id, result)
+     })
+        })
+       
+        console.log(seach)
+      
+     
+
+
 
 
 
