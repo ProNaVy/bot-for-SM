@@ -45,7 +45,7 @@ let infForEachNumber
 let infForEachAdress
 
 bot.onText(/\/start/, (msg) => {
-  console.log(msg)
+  console.log(msg) // вывод в консоль для проверки, удалить после завершения
   const chatId = msg.chat.id;
   bot.sendMessage(chatId, "Выберите параметры поиска", menuKeyboard);
 });
@@ -54,7 +54,7 @@ bot.on('callback_query', (query) => {
   const chatId = query.message.chat.id;
 
   if (query.data === 'find_number') { // если поиск по номеру объекта
-      console.log(query);
+      console.log(query);// вывод в консоль для проверки, удалить после завершения
       bot.sendMessage(chatId, "Введите номер объекта в формате 8617_ХХХ")
       
       bot.on("text", (msg) => {
@@ -63,13 +63,13 @@ bot.on('callback_query', (query) => {
         bot.sendMessage(chatId, 'Выберите контакт', options)
       })
       
-      } else if (query.data === 'find_adress') { // если поиск по номеру объекта
-        console.log(query);
+      } else if (query.data === 'find_adress') { // если поиск по адресу объекта
+        console.log(query); // вывод в консоль для проверки, удалить после завершения
         bot.sendMessage(chatId, "Введите адрес объекта")
        
         bot.on("text", (msg) => {
           infForEachAdress = msg.text
-          console.log(infForEachAdress)
+          console.log(infForEachAdress) // вывод в консоль для проверки, удалить после завершения
           bot.sendMessage(chatId, 'Выберите контакт', options)
      })
   
@@ -85,29 +85,29 @@ bot.on('callback_query', (query) => {
       
         if (query.data === 'Аварийная служба ТСЖ') {
           seach = "Аварийная_служба_ТСЖ"
-          console.log(seach)
+          console.log(seach) // вывод в консоль для проверки, удалить после завершения
                     
          }
         else if (query.data === 'Тепловые сети') {
           seach = "Тепловые_сети"
-          console.log(seach)
+          console.log(seach) // вывод в консоль для проверки, удалить после завершения
           
          }
         else if (query.data === 'РЭС') { 
           seach = "РЭС"
-          console.log(seach)
+          console.log(seach) // вывод в консоль для проверки, удалить после завершения
           
          }
         else if (query.data === 'Водоканал') { 
           seach = "Водоканал"
-          console.log(seach)
+          console.log(seach) // вывод в консоль для проверки, удалить после завершения
         } 
         else if (query.data === 'Руководители ВСП') { 
           seach = "Руководители_ВСП"
-          console.log(seach)
+          console.log(seach) // вывод в консоль для проверки, удалить после завершения
           
          }
-         // вариант с добавлением модуля из арр
+         // вариант с добавлением модуля из арр (поиск и вывод ответа БД отрабатывает хорошо)
          let data
          let sql
 
@@ -119,13 +119,13 @@ bot.on('callback_query', (query) => {
       sql = `select ${seach} from contact where number_fil = '${infForEachNumber}'`
       }
 
-      
-     const result = JSON.stringify(seachResult(sql, data))
+      // Проблема!! Ответ в консоль выводит, но не выводит в чат....
+      console.log(JSON.stringify(seachResult(sql, data)))
        
-     console.log(result)
-     bot.on("text", (msg) => {
+     //console.log(result)
+     
          bot.sendMessage(msg.chat.id, result)
-     })
+     
         })
        
         console.log(seach)
@@ -141,50 +141,3 @@ bot.on('callback_query', (query) => {
 
 
 
-
-
-
-
-    //bot.sendMessage(msg.chat.id, "Начнем. Введите адрес или номер объекта")
- 
-/*bot.on(/'Поиск '+(.*)/, (msg) => {
-
-      console.log(msg);
-      const chatId = msg.chat.id;
-      bot.deleteMessage(chatID, mesId)
-      bot.sendMessage(chatId, "Введите номер объекта");
-    })
-
-    bot.onText('Поиск по адресу объекта', (msg) => {
-      console.log(msg);
-      const chatId = msg.chat.id;
-      bot.deleteMessage(chatID, mesId)
-      bot.sendMessage(chatId, "Введите адрес объекта");
-    })
-
-       
-    
-
-//bot.on(callback_data)
-
-bot.on('text', (msg) => {
-if (msg.is_bot = false) {
-  infForEach = msg.text
-}
-console.log(infForEach)
-} ) 
-    bot.on('message', (msg) => {
-      bot.sendMessage(msg.chat.id, "Выберите контакт:", options, {
-  reply_to_message_id: message_id
-  })
-    })
-
- 
- bot.on('callback_query', query => {
-  console.log(query); //потом убрать чтобы в консоль не выводился объект msg
-  /*if(query.is_bot === false) {
-  infForEach = query.text
-  return infForEach
-}})*/
- //console.log(infForEach) 
-   
