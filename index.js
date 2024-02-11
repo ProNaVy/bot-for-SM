@@ -1,5 +1,6 @@
 require('dotenv').config()
-const seachResult = require('./app.js')
+const { seachResult } = require('./app.js')
+
 const TelegramBot = require('node-telegram-bot-api');
 
 console.log("Bot has been started...")
@@ -44,43 +45,44 @@ let seach
 let infForEachNumber
 let infForEachAdress
 
-bot.onText(/\/start/, (msg) => {
+bot.onText(/\/start/, async (msg) => {
   console.log(msg) // вывод в консоль для проверки, удалить после завершения
   const chatId = msg.chat.id;
-  bot.sendMessage(chatId, "Выберите параметры поиска", menuKeyboard);
+  await bot.sendMessage(chatId, "Выберите параметры поиска", menuKeyboard);
 });
 
-bot.on('callback_query', (query) => {
+bot.on('callback_query', async (query) => {
   const chatId = query.message.chat.id;
 
   if (query.data === 'find_number') { // если поиск по номеру объекта
       console.log(query);// вывод в консоль для проверки, удалить после завершения
-      bot.sendMessage(chatId, "Введите номер объекта в формате 8617_ХХХ")
+     await bot.sendMessage(chatId, "Введите номер объекта в формате 8617_ХХХ")
       
-      bot.on("text", (msg) => {
+      bot.on("text", async (msg) => {
         infForEachNumber = msg.text
         console.log(infForEachNumber)
-        bot.sendMessage(chatId, 'Выберите контакт', options)
+       await bot.sendMessage(chatId, 'Выберите контакт', options)
       })
       
       } else if (query.data === 'find_adress') { // если поиск по адресу объекта
         console.log(query); // вывод в консоль для проверки, удалить после завершения
-        bot.sendMessage(chatId, "Введите адрес объекта")
+       await bot.sendMessage(chatId, "Введите адрес объекта")
        
-        bot.on("text", (msg) => {
+        bot.on("text", async (msg) => {
           infForEachAdress = msg.text
           console.log(infForEachAdress) // вывод в консоль для проверки, удалить после завершения
-          bot.sendMessage(chatId, 'Выберите контакт', options)
+        await bot.sendMessage(chatId, 'Выберите контакт', options)
      })
   
    } else {
-    bot.sendMessage(chatId, 'Непонятно, давай попробуем ещё раз?', menuKeyboard)
+    return
+    //bot.sendMessage(chatId, 'Непонятно, давай попробуем ещё раз?', menuKeyboard)
       }
       return infForEachNumber, infForEachAdress
 
       });
 
-    bot.on('callback_query', (query) => {
+    bot.on('callback_query', async (query) => {
         const chatId = query.message.chat.id;
       
         if (query.data === 'Аварийная служба ТСЖ') {
@@ -119,12 +121,23 @@ bot.on('callback_query', (query) => {
       sql = `select ${seach} from contact where number_fil = '${infForEachNumber}'`
       }
 
+      
       // Проблема!! Ответ в консоль выводит, но не выводит в чат....
-      console.log(JSON.stringify(seachResult(sql, data)))
-       
+      //console.log(JSON.stringify(seachResult(sql, data)))
+      try {
+        const res = await seachResult(sql, data, function(elem){
+          
+          const itog = JSON.stringify(elem)
+          console.log(itog)
+          bot.sendMessage(chatId, itog)
+                });
+    } catch (error) {
+        console.error(error);
+        bot.sendMessage(chatId, 'Произошла ошибка при поиске.');
+    }
      //console.log(result)
      
-         bot.sendMessage(msg.chat.id, result)
+        // bot.sendMessage(msg.chat.id, result)
      
         })
        
